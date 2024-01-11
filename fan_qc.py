@@ -13,7 +13,7 @@ filename = "Dec 22 peak - 4"
 data = pd.read_csv(f"{filename}.txt", sep=" ", header=None, skiprows=14)
 data.columns = ["Freq(Hz)", "SPL(dB)"] 
 # print(data)
-# data.to_csv(f"C:/fan_qc/{filename}.csv")  ## to write the csv file --> make sure the location is correct
+# data.to_csv(f"C:/fan_qc/{filename}.csv")  ## to write the csv file --> not necessary
 
 dB_threshold = 45  # dB threshold at which we want to find which frequencies are peaks
 peaks, _ = find_peaks(data["SPL(dB)"], height=dB_threshold) # find the peaks in the dB
