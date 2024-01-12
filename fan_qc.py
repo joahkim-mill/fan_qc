@@ -17,7 +17,9 @@ fig = go.Figure()
 
 for i in range(1,11):
     filename = f"Fan {i}"
-    data = pd.read_csv(f"prebaked_delta\{filename}.txt", sep=" ", header=None, skiprows=14)
+    
+    url = f"https://github.com/joahkim-mill/fan_qc/raw/main/prebaked_delta/Fan%20{i}.txt"
+    data = pd.read_csv(url, sep=" ", header=None, skiprows=14, engine='python')
     data.columns = ["Freq(Hz)", "SPL(dB)", "Phase(degrees)"] 
 
     # print(data.head)
