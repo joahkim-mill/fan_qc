@@ -9,9 +9,9 @@ peak frequencies above a specified dB threshold. The peaks and corresponding dB/
 Can optionally plot the data as well.
 """
 
-filename = "Dec 22 peak - 4"
-data = pd.read_csv(f"{filename}.txt", sep=" ", header=None, skiprows=14)
-data.columns = ["Freq(Hz)", "SPL(dB)"] 
+filename = "Fan 1"
+data = pd.read_csv(f"prebaked_delta\{filename}.txt", sep=" ", header=None, skiprows=14)
+data.columns = ["Freq(Hz)", "SPL(dB)", "Phase(degrees)"] 
 # print(data)
 # data.to_csv(f"C:/fan_qc/{filename}.csv")  ## to write the csv file --> not necessary
 
@@ -29,7 +29,7 @@ fig = go.Figure()
 
 fig.add_trace(go.Scatter(x=data["Freq(Hz)"], y=data["SPL(dB)"], name="Noise Recording"))
 fig.add_trace(go.Scatter(mode='markers', x=data["Freq(Hz)"][peaks], y=data["SPL(dB)"][peaks], name="Peak Frequencies", marker=dict(color='red')))
-fig.update_layout(title="Fan Noise Recording", 
+fig.update_layout(title=f"{filename} Noise Recording", 
                   xaxis_title="Frequency Spectrum [Hz]", 
                   yaxis_title="SPL[dB]",
                   height=600,
