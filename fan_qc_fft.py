@@ -10,12 +10,19 @@ data = pd.read_csv(url, sep=" ", header=None, skiprows=14, engine='python')
 data.columns = ["Freq(Hz)", "SPL(dB)", "Phase(degrees)"] 
 
 N = len(data["Freq(Hz)"])
+# print("N: ", N)
 sample_rate = 48000 # Hz 
 T = 1/sample_rate 
 yf = fft(data)
 xf = fftfreq(N, T)[:N//2]
+y = 2.0/N * abs(yf[0:N//2])
+
+# print("xf: ", xf)
+# print(xf.shape)
+# print("y: ", y[:,1])
+# print(y.shape)
 
 fig = go.Figure()
-fig.add_trace(go.Scatter(xf, 2.0/N * abs(yf[0:N//2]))) 
+fig.add_trace(go.Scatter(x=xf, y=y[:,1], line_shape='linear')) 
 fig.show()
 
