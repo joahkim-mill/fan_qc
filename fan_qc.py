@@ -10,7 +10,8 @@ import streamlit as st
 # """
 
 # dB threshold at which we want to find which frequencies are peaks
-dB_threshold = st.slider("dB Threshold: ", 0, 80, 80)
+# dB_threshold = st.slider("dB Threshold: ", 0, 80, 80)
+dB_threshold = st.text_input("dB Threshold: ")
 # dB_threshold = 45  
 
 fig = go.Figure()
