@@ -42,7 +42,7 @@ for i in range(1,11):
                     )
     
 
-for j in range(1,5):
+for j in range(1,6):
     filename = f"Bad Fan {j}" 
 
     url = f"https://github.com/joahkim-mill/fan_qc/raw/main/bad_delta/Bad%20Fan%20{j}.txt"
