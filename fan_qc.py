@@ -11,7 +11,7 @@ import streamlit as st
 
 # dB threshold at which we want to find which frequencies are peaks
 # dB_threshold = st.slider("dB Threshold: ", 0, 80, 80)
-dB_threshold = st.text_input("dB Threshold: ")
+dB_threshold = st.number_input("dB Threshold: ")
 # dB_threshold = 45  
 
 fig = go.Figure()
@@ -30,14 +30,14 @@ for i in range(1,11):
                              name=f"{filename} Noise Recording",
                              )
                     )
-    fig.add_trace(go.Scatter(mode='markers', 
-                             x=data["Freq(Hz)"][peaks], 
-                             y=data["SPL(dB)"][peaks], 
-                             name=f"{filename} Peaks", 
-                            #  marker=dict(color='red')
-                             )
-                    )
-
+    if len(peaks) > 0:  # only attempt to draw peaks if they actually exist
+        fig.add_trace(go.Scatter(mode='markers', 
+                                x=data["Freq(Hz)"][peaks], 
+                                y=data["SPL(dB)"][peaks], 
+                                name=f"{filename} Peaks", 
+                                #  marker=dict(color='red')
+                                )
+                        )
 
 for j in range(1,5):
     filename = f"Bad Fan {j}" 
@@ -53,13 +53,14 @@ for j in range(1,5):
                              name=f"{filename} Noise Recording"
                              )
                     )
-    fig.add_trace(go.Scatter(mode='markers', 
-                             x=data["Freq(Hz)"][peaks], 
-                             y=data["SPL(dB)"][peaks], 
-                             name=f"{filename} Peaks", 
-                            #  marker=dict(color='red'),
-                             )
-                    )
+    if len(peaks) > 0:  # only attempt to draw peaks if they actually exist
+        fig.add_trace(go.Scatter(mode='markers', 
+                                x=data["Freq(Hz)"][peaks], 
+                                y=data["SPL(dB)"][peaks], 
+                                name=f"{filename} Peaks", 
+                                #  marker=dict(color='red'),
+                                )
+                        )
 
 
 fig.update_layout(title="Pre-Baked Delta Fan Noise Recording", 
