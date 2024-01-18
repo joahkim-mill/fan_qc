@@ -11,7 +11,7 @@ import streamlit as st
 
 # dB threshold at which we want to find which frequencies are peaks
 # dB_threshold = st.slider("dB Threshold: ", 0, 80, 80)
-dB_threshold = st.number_input("dB Threshold: ")
+dB_threshold = st.number_input("dB Threshold: ", value=None, placeholder='Type a number ... ')
 # dB_threshold = 45  
 
 fig = go.Figure()
@@ -23,21 +23,24 @@ for i in range(1,11):
     data = pd.read_csv(url, sep=" ", header=None, skiprows=14, engine='python')
     data.columns = ["Freq(Hz)", "SPL(dB)", "Phase(degrees)"] 
 
-    peaks, _ = find_peaks(data["SPL(dB)"], height=dB_threshold) # find the peaks in the dB
+    if not (dB_threshold == None) :
+        peaks, _ = find_peaks(data["SPL(dB)"], height=dB_threshold) # find the peaks in the dB
+
+        if len(peaks) > 0:  # only attempt to draw peaks if they actually exist
+            fig.add_trace(go.Scatter(mode='markers', 
+                                    x=data["Freq(Hz)"][peaks], 
+                                    y=data["SPL(dB)"][peaks], 
+                                    name=f"{filename} Peaks", 
+                                    #  marker=dict(color='red')
+                                    )
+                            )
 
     fig.add_trace(go.Scatter(x=data["Freq(Hz)"], 
                              y=data["SPL(dB)"], 
                              name=f"{filename} Noise Recording",
                              )
                     )
-    if len(peaks) > 0:  # only attempt to draw peaks if they actually exist
-        fig.add_trace(go.Scatter(mode='markers', 
-                                x=data["Freq(Hz)"][peaks], 
-                                y=data["SPL(dB)"][peaks], 
-                                name=f"{filename} Peaks", 
-                                #  marker=dict(color='red')
-                                )
-                        )
+    
 
 for j in range(1,5):
     filename = f"Bad Fan {j}" 
@@ -46,22 +49,23 @@ for j in range(1,5):
     data = pd.read_csv(url, sep=" " , header=None, skiprows=14, engine='python')
     data.columns = ["Freq(Hz)", "SPL(dB)", "Phase(degrees)"]
 
-    peaks, _ = find_peaks(data["SPL(dB)"], height=dB_threshold) # find the peaks in the dB
+    if not (dB_threshold == None):
+        peaks, _ = find_peaks(data["SPL(dB)"], height=dB_threshold) # find the peaks in the dB
+        
+        if len(peaks) > 0:  # only attempt to draw peaks if they actually exist
+            fig.add_trace(go.Scatter(mode='markers', 
+                                    x=data["Freq(Hz)"][peaks], 
+                                    y=data["SPL(dB)"][peaks], 
+                                    name=f"{filename} Peaks", 
+                                    #  marker=dict(color='red'),
+                                    )
+                            )
 
     fig.add_trace(go.Scatter(x=data["Freq(Hz)"], 
                              y=data["SPL(dB)"], 
                              name=f"{filename} Noise Recording"
                              )
                     )
-    if len(peaks) > 0:  # only attempt to draw peaks if they actually exist
-        fig.add_trace(go.Scatter(mode='markers', 
-                                x=data["Freq(Hz)"][peaks], 
-                                y=data["SPL(dB)"][peaks], 
-                                name=f"{filename} Peaks", 
-                                #  marker=dict(color='red'),
-                                )
-                        )
-
 
 fig.update_layout(title="Pre-Baked Delta Fan Noise Recording", 
                   xaxis_title="Frequency Spectrum [Hz]", 
