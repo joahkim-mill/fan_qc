@@ -42,7 +42,7 @@ for j in range(1,5):
     filename = f"Bad Fan {j}" 
 
     url = f"https://github.com/joahkim-mill/fan_qc/raw/main/bad_delta/Bad%20Fan%20{j}.txt"
-    data = pd.read_csv(url, sep=" " , header=None, skiprows=14, encoding='python')
+    data = pd.read_csv(url, sep=" " , header=None, skiprows=14, engine='python')
     data.columns = ["Freq(Hz)", "SPL(dB)", "Phase(degrees)"]
 
     peaks, _ = find_peaks(data["SPL(dB)"], height=dB_threshold) # find the peaks in the dB
