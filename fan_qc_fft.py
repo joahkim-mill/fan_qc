@@ -17,11 +17,6 @@ yf = fft(data)
 xf = fftfreq(N, T)[:N//2]
 y = 2.0/N * abs(yf[0:N//2])
 
-# print("xf: ", xf)
-# print(xf.shape)
-# print("y: ", y[:,1])
-# print(y.shape)
-
 fig = go.Figure()
 fig.add_trace(go.Scatter(x=xf, y=y[:,1], line_shape='linear')) 
 
