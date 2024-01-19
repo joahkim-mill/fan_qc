@@ -57,8 +57,11 @@ def visualize_stats():
        
         # buttons to control reset, toggle all good fans, toggle all bad fans
         reset=st.button('Reset', on_click=reset_button)
-        all_good = st.button("All Good Fans", on_click=all_good_button)
-        all_bad = st.button("All Bad Fans", on_click=all_bad_button)
+        buttons = st.columns(2)
+        with buttons[0]:
+            all_good = st.button("All Good Fans", on_click=all_good_button)
+        with buttons[1]:
+            all_bad = st.button("All Bad Fans", on_click=all_bad_button)
 
         checks = st.columns(2)
         st.markdown("""
@@ -76,7 +79,6 @@ def visualize_stats():
         </style>
         """,unsafe_allow_html=True)
         with checks[0]:
-            all_good = st.checkbox("All Good")
             check_dict["g1"] = st.checkbox('Good 1', key='g1')
             check_dict["g2"] = st.checkbox('Good 2', key='g2')
             check_dict["g3"] = st.checkbox('Good 3', key='g3')
@@ -89,7 +91,6 @@ def visualize_stats():
             check_dict["g10"] = st.checkbox('Good 10', key='g10')
         
         with checks[1]:
-            all_bad = st.checkbox("All Bad")
             check_dict["b1"] = st.checkbox('Bad 1', key='b1')
             check_dict["b2"] = st.checkbox('Bad 2', key='b2')
             check_dict["b3"] = st.checkbox('Bad 3', key='b3')
