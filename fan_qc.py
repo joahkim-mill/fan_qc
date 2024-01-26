@@ -8,6 +8,7 @@ import streamlit as st
 # peak frequencies above a specified dB threshold. The peaks and corresponding dB/Hz values will be printed.
 # Can optionally plot the data as well.
 # """
+
 def reset_button():
     st.session_state["g1"] = False
     st.session_state["g2"] = False
@@ -49,6 +50,29 @@ def all_bad_button():
 # #checkbox you want the button to un-check
 # check_box = st.checkbox("p", key='p')
 
+def drag_drop_file_plot():
+    uploaded_files = st.file_uploader("Choose a .txt file to plot", accept_multiple_files=True)
+    
+    fig = go.Figure()
+    for uploaded_file in uploaded_files:
+        data = pd.read_csv(uploaded_file, sep=" ", header=None, skiprows=14, engine='python')
+        data.columns = ["Freq(Hz)", "SPL(dB)", "Phase(degrees)"] 
+
+        fig.add_trace(go.Scatter(x=data["Freq(Hz)"],
+                                y=data["SPL(dB)"],
+                                name=uploaded_file.name,
+                                mode='lines'
+                                ))
+        fig.update_layout(title=f"Plots of Uploaded Files",
+                          width=800,
+                          height=600,
+                          xaxis_title="Frequency [Hz]",
+                          yaxis_title="SPL [dB]",
+                          )
+    st.plotly_chart(fig)
+
+    return
+
 def visualize_stats():
     check_dict = dict({})
     
@@ -61,7 +85,7 @@ def visualize_stats():
         with buttons[0]:
             all_good = st.button("All Good Fans", on_click=all_good_button)
         with buttons[1]:
-            all_bad = st.button("All Bad Fans", on_click=all_bad_button)
+            all_bad = st.button("All Bad Fans", on_click=all_bad_button) 
 
         checks = st.columns(2)
         st.markdown("""
@@ -263,6 +287,8 @@ fig.update_yaxes(title_font_color="black")
 st.plotly_chart(fig)
 
 visualize_stats()
+
+drag_drop_file_plot()
 
 
 # # print out the peak data points
