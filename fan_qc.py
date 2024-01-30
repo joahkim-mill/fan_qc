@@ -51,7 +51,10 @@ def all_bad_button():
 # check_box = st.checkbox("p", key='p')
 
 def drag_drop_file_plot():
-    uploaded_files = st.file_uploader("Choose a .txt file to plot", accept_multiple_files=True)
+
+    with st.sidebar:
+        st.header("Import .txt files to be plotted on top of one another")
+        uploaded_files = st.file_uploader("Choose a .txt file to plot", accept_multiple_files=True)
     
     fig = go.Figure()
     for uploaded_file in uploaded_files:
@@ -63,7 +66,7 @@ def drag_drop_file_plot():
                                 name=uploaded_file.name,
                                 mode='lines'
                                 ))
-        fig.update_layout(title=f"Plots of Uploaded Files",
+        fig.update_layout(title=f"Plot of Uploaded Files",
                           width=800,
                           height=600,
                           xaxis_title="Frequency [Hz]",
@@ -218,13 +221,19 @@ def visualize_stats():
     st.plotly_chart(fig)
     return 
 
+st.title("Depict the differences between the good and bad fans and determine if these discrepancies can be used for QC")
+"1. Can type in a threshold value to extrapolate for different peak frequencies when the signal reaches a certain dB value. \n 2. The first graph depicts all of the noise recordings overlaid on top of one another. If the dB threshold is set, the peak frequencies are also graphed here. \n 3. The second plot depicts the average signal of the good and bad fans, along with their standard deviations. Check the boxes in the left sidebar of the plots you wish to compare to the statistics. \n 4. The third graph plots only noise recordings whose .txt files have been dragged/dropped into the left sidebar. Mainly useful for very specific comparisons. \n 5. Click on specific plots in the legend to toggle their visibility and double-click to focus on one. "
 
 # dB threshold at which we want to find which frequencies are peaks
-# dB_threshold = st.slider("dB Threshold: ", 0, 80, 80)
 dB_threshold = st.number_input("dB Threshold: ", value=None, placeholder='Type a number ... ')
 
 fig = go.Figure()
 
+# initialize dataframe to visualize data as a table
+good_peak_data = pd.DataFrame({"Good Fan":[],
+                          "Frequency [Hz]":[],
+                          "SPL [dB]":[]
+                        })
 for i in range(1,11):
     filename = f"Fan {i}"
     
@@ -243,13 +252,18 @@ for i in range(1,11):
                                     #  marker=dict(color='red')
                                     )
                             )
+            for p in peaks:
+                good_peak_data.loc[len(good_peak_data.index)] = [i, data["Freq(Hz)"][p], data["SPL(dB)"][p]]
 
     fig.add_trace(go.Scatter(x=data["Freq(Hz)"], 
                              y=data["SPL(dB)"], 
                              name=f"{filename} Noise Recording",
                              )
                     )
-
+bad_peak_data = pd.DataFrame({"Bad Fan":[],
+                              "Frequency [Hz]":[],
+                              "SPL [dB]":[]
+                            })
 for j in range(1,6):
     filename = f"Bad Fan {j}" 
 
@@ -268,6 +282,9 @@ for j in range(1,6):
                                     #  marker=dict(color='red'),
                                     )
                             )
+            
+            for p in peaks:
+                bad_peak_data.loc[len(bad_peak_data.index)] = [j, data["Freq(Hz)"][p], data["SPL(dB)"][p]]
 
     fig.add_trace(go.Scatter(x=data["Freq(Hz)"], 
                              y=data["SPL(dB)"], 
@@ -285,9 +302,18 @@ fig.update_xaxes(title_font_color="black")
 fig.update_yaxes(title_font_color="black")
 
 st.plotly_chart(fig)
+col = st.columns(2)
+with col[0]:
+    st.header("Good Fan Peak Data")
+    st.dataframe(good_peak_data, width=300, )
+with col[1]:
+    st.header("Bad Fan Peak Data")
+    st.dataframe(bad_peak_data, width=300, )
+
 
 visualize_stats()
 
+st.write("Select .txt file(s) on the sidebar to plot them below. They must be exported from REW or be formatted the same way.")
 drag_drop_file_plot()
 
 
