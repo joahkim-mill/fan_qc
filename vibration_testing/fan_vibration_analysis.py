@@ -43,12 +43,6 @@ v = np.asarray(v)
 p = np.asarray(p)
 t = np.arange(0, tf, dt)
 
-# fig = go.Figure()
-# fig.add_trace(go.Scatter(x=t, y=a, name="accel"))
-# fig.add_trace(go.Scatter(x=t, y=v, name="vel"))
-# fig.add_trace(go.Scatter(x=t, y=p, name="pos"))
-# fig.show()
-
 fig = make_subplots(rows=3, cols=1,
                     subplot_titles=("X", "Y", "Z")
                     )

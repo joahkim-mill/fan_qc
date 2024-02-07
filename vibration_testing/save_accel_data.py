@@ -8,6 +8,8 @@ import numpy as np
 ## make sure to change the name of the file it gets saved to, or it will get overwritten
 i2c = board.I2C() 
 accelerometer = adafruit_adxl34x.ADXL345(i2c)
+# accelerometer.setDataRate(ADXL345_DATARATE_200_HZ)
+
 i=0
 tf = 10  # endtime [sec]
 # sample_rate = accelerometer.data_rate  # currently 10 [Hz] ? but can be changed
