@@ -5,7 +5,7 @@ from plotly.subplots import make_subplots
 
 ## ------- GOOD FAN DATA -------- ##
 # read in csv to access data 
-good = pd.read_csv("good_fan_1_accel_500hz.csv")
+good = pd.read_csv("good_fan_1_accel.csv")
 
 # make them into columns
 t_g = np.asarray(good["time"])
@@ -14,7 +14,7 @@ ay_g = np.asarray(good["y_accel"])
 az_g = np.asarray(good["z_accel"])
 
 ## ------- BAD FAN DATA -------- ##
-bad = pd.read_csv("bad_fan_4_accel_500hz.csv")
+bad = pd.read_csv("bad_fan_4_accel.csv")
 
 # make them into columns
 t_b = np.asarray(bad["time"])
