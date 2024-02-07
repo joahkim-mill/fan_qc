@@ -21,6 +21,7 @@
 ######################################################
 # Copyright (c) 2021 Maker Portal LLC
 # Author: Joshua Hrisko
+# https://makersportal.com/blog/calibration-of-an-inertial-measurement-unit-imu-with-raspberry-pi-part-ii
 ######################################################
 #
 # This code reads data from the MPU9250/MPU9265 board
@@ -42,19 +43,6 @@ from scipy.optimize import curve_fit
 from scipy.integrate import cumtrapz
 from scipy import signal
 
-# sys.path.append('../')
-# t0 = time.time()
-# start_bool = False # if IMU start fails - stop calibration
-# while time.time()-t0<5:
-#     try: 
-#         from mpu9250_i2c import *
-#         start_bool = True
-#         break
-#     except:
-#         continue
-
-# time.sleep(2) # wait for MPU to load and settle
-# 
 # initialize board
 i2c = board.I2C()
 accelerometer = adafruit_adxl34x.ADXL345(i2c)
