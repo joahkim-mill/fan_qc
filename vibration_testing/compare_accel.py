@@ -87,10 +87,14 @@ a_b3 = np.hstack((ax_b3.reshape((-1,1)), ay_b3.reshape((-1,1)), az_b3.reshape((-
 
 #endregion -- bad fan data
 
-data_g = [a_g7, a_g8, a_g9]  ## NOTE : exluding good fan 10 bc it's not actually that good --> i think it should be labeled bad
+data_g = [a_g7, a_g8, a_g9,]  ## NOTE : exluding good fan 10 bc it's not actually that good --> i think it should be labeled bad
 data_b = [a_b1, a_b2, a_b3] 
 
-""" #region -- plots
+num_fans_g = len(data_g)
+num_fans_b = len(data_b)
+
+
+#region -- plots
 #### --------- CREATE PLOTS --------- ####
 fig = make_subplots(rows=3, cols=1,
                     subplot_titles=("X", "Y", "Z"), 
@@ -111,7 +115,15 @@ fig.add_trace(
     row=1, col=1
 )
 fig.add_trace(
-    go.Scatter(x=t_g, y=ax_g, name="ax_g", line=dict(color="#f5bad4")),
+    go.Scatter(x=t_g7, y=ax_g7, name="ax_g7", line=dict(color="#f5bad4")),
+    row=1, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_g8, y=ax_g8, name="ax_g8", line=dict(color="#f5bad4")),
+    row=1, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_g9, y=ax_g9, name="ax_g9", line=dict(color="#f5bad4")),
     row=1, col=1
 )
 
@@ -129,7 +141,15 @@ fig.add_trace(
     row=2, col=1
 )
 fig.add_trace(
-    go.Scatter(x=t_g, y=ay_g, name="ay_g", line=dict(color="#f5bad4")),
+    go.Scatter(x=t_g7, y=ay_g7, name="ay_g7", line=dict(color="#f5bad4")),
+    row=2, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_g8, y=ay_g8, name="ay_g8", line=dict(color="#f5bad4")),
+    row=2, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_g9, y=ay_g9, name="ay_g9", line=dict(color="#f5bad4")),
     row=2, col=1
 )
 
@@ -147,41 +167,61 @@ fig.add_trace(
     row=3, col=1
 )
 fig.add_trace(
-    go.Scatter(x=t_g, y=az_g, name="az_g", line=dict(color="#f5bad4")),
+    go.Scatter(x=t_g7, y=az_g7, name="az_g7", line=dict(color="#f5bad4")),
+    row=3, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_g8, y=az_g8, name="az_g8", line=dict(color="#f5bad4")),
+    row=3, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_g9, y=az_g9, name="az_g9", line=dict(color="#f5bad4")),
     row=3, col=1
 )
 
 fig.update_layout(title="Comparison of Acceleration Data between Fans", 
-                  height = 1200,
-                  width = 1100)
+                  height = 900,
+                  width = 1200)
 fig.show()
 
 #### ------ END PLOTS -------- ####
 
-""" #endregion -- plots
+#endregion -- plots
+
 
 #region -- calc stats
 
 #### ------ CALCULATE STATS ------- ####
 
 # 1. take averages of raw data : means are all pretty similar ---> std dev looks promising !! the bad ones are roughly 2x those of the good ones
-print("good fans")
+print("good fans std dev (of absolute values)")
+avg_std_g = np.zeros((3,))
 for g in data_g: 
     # print(f"avg : ", np.mean(g, axis=0))
     # print(f"std dev : ", np.std(g, axis=0))
+    std_dev = np.std(np.abs(g), axis=0)
+    avg_std_g += std_dev
+    print(" "*7, std_dev)
 
-    # print("avg : ", np.mean(np.abs(g), axis=0))
-    print("std dev : ", np.std(np.abs(g), axis=0))
+avg_std_g = avg_std_g / num_fans_g
+print("avg std dev of good fans: ", avg_std_g)
+print("-" * 50)
 
-print("bad fans")
+print("bad fans std dev (of absolute values)")
+avg_std_b = np.zeros((3,))
 for b in data_b:
     # print(f"avg : ", np.mean(b, axis=0))
     # print(f"std dev : ", np.std(b, axis=0))
+    std_dev = np.std(np.abs(b), axis=0)
+    avg_std_b += std_dev
+    print(" "*7, std_dev)
 
-    # print("avg : ", np.mean(np.abs(b), axis=0))
-    print("std dev : ", np.std(np.abs(b), axis=0))
+avg_std_b = avg_std_b / num_fans_b
+print("avg std dev of bad fans: ", avg_std_b)
+print("-" * 50)
 
 
+"""
 # 2. max [absolute] amplitude --> doens't seem relevant ... except the y accel for bad fans are pretty bad
 # print("good fans")
 # for g in data_g:
@@ -192,16 +232,42 @@ for b in data_b:
 # for b in data_b:
 #     # absolute = np.abs(b)
 #     print("max amplitude : ", np.amax(b, axis=0))
+"""
 
- 
+"""
 # 3. use find peaks ?? FINISH HERE !
-# fig = go.Figure()
-# t_g = [t_g7, t_g8, t_g9]
-# t_b = [t_b1, t_b2, t_b3]
-# for i in range(3):
-#     peaks, _ = find_peaks(data_g[i])
-#     fig.add_trace(x=t_g[i], y=data_g[i])
-#     fig.add_trace(go.Scatter(x=t_g[i][peaks], y=data_g[i][peaks], mode='markers'))
+fig = go.Figure()
+fig_b = go.Figure()
+t_g = [t_g7, t_g8, t_g9]
+t_b = [t_b1, t_b2, t_b3]
+threshold = [1, 1, 11.25]
+
+num_peaks_g = np.zeros((num_fans_g, 3)) # each column is an axis, each row is a good fan
+for fan in range(num_fans_g):
+    for axis in range(3):
+        peaks, _ = find_peaks(data_g[fan][:,axis], threshold[axis])
+        fig.add_trace(go.Scatter(x=t_g[fan].ravel(), y=data_g[fan][:,axis].ravel(), name=f"good fan {fan + 7}_axis {axis}"))
+        fig.add_trace(go.Scatter(x=t_g[fan][peaks], y=data_g[fan][:,axis][peaks], mode='markers', name=f"good fan {fan + 7}_axis {axis} peaks"))
+        num_peaks_g[fan, axis] = peaks.shape[0] 
+print("Number of peaks above threshold for good fans :")
+print(num_peaks_g)
+
+num_peaks_b = np.zeros((num_fans_b, 3)) # each column is an axis, each row is a good fan
+for fan in range(num_fans_b):
+    for axis in range(3):
+        peaks, _ = find_peaks(data_b[fan][:,axis], threshold[axis])
+        fig_b.add_trace(go.Scatter(x=t_b[fan].ravel(), y=data_b[fan][:,axis].ravel(), name=f"bad fan {fan + 1}_axis {axis}"))
+        fig_b.add_trace(go.Scatter(x=t_b[fan][peaks], y=data_b[fan][:,axis][peaks], mode='markers', name=f"bad fan {fan + 1}_axis {axis} peaks"))
+        num_peaks_b[fan, axis] = peaks.shape[0] 
+print("Number of peaks above threshold for bad fans : ")
+print(num_peaks_b)
+
+fig.update_layout(height=400, width=1000)
+fig_b.update_layout(height=400, width=1000)
+# fig.show()
+# fig_b.show()
+"""
+
 
 # 4.  maybe determine at what theshold the amplitude hits a percentile ?
 

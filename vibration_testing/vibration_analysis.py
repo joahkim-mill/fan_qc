@@ -3,7 +3,7 @@ import numpy as np
 from plotly import graph_objects as go 
 
 # read in csv to access data 
-filename = "test_deque_accel.csv" # depends on which folder you're in
+filename = "./accel_data/bad_1.csv" # depends on which folder you're in
 accelerations = pd.read_csv(filename)
 
 # make them into columns
