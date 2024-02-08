@@ -5,24 +5,43 @@ from plotly.subplots import make_subplots
 
 ## ------- GOOD FAN DATA -------- ##
 # read in csv to access data 
-good = pd.read_csv("good_fan_1_accel.csv")
+good7 = pd.read_csv("./accel_data/good_7.csv")
 
 # make them into columns
-t_g = np.asarray(good["time"])
-ax_g = np.asarray(good["x_accel"])
-ay_g = np.asarray(good["y_accel"])
-az_g = np.asarray(good["z_accel"])
+t_g7 = np.asarray(good7["time"])
+ax_g7 = np.asarray(good7["x_accel"])
+ay_g7 = np.asarray(good7["y_accel"])
+az_g7 = np.asarray(good7["z_accel"])
 
 ## ------- BAD FAN DATA -------- ##
-bad = pd.read_csv("bad_fan_4_accel.csv")
+bad1 = pd.read_csv("./accel_data/bad_1.csv")
 
 # make them into columns
-t_b = np.asarray(bad["time"])
-ax_b = np.asarray(bad["x_accel"])
-ay_b = np.asarray(bad["y_accel"])
-az_b = np.asarray(bad["z_accel"])
+t_b1 = np.asarray(bad1["time"])
+ax_b1 = np.asarray(bad1["x_accel"])
+ay_b1 = np.asarray(bad1["y_accel"])
+az_b1 = np.asarray(bad1["z_accel"])
 
-## --------- CREATE PLOTS --------- ##
+## ------- BAD FAN DATA -------- ##
+bad2 = pd.read_csv("./accel_data/bad_2.csv")
+
+# make them into columns
+t_b2 = np.asarray(bad2["time"])
+ax_b2 = np.asarray(bad2["x_accel"])
+ay_b2 = np.asarray(bad2["y_accel"])
+az_b2 = np.asarray(bad2["z_accel"])
+
+## ------- BAD FAN DATA -------- ##
+bad3 = pd.read_csv("./accel_data/bad_3.csv")
+
+# make them into columns
+t_b3 = np.asarray(bad3["time"])
+ax_b3 = np.asarray(bad3["x_accel"])
+ay_b3 = np.asarray(bad3["y_accel"])
+az_b3 = np.asarray(bad3["z_accel"])
+
+"""
+#### --------- CREATE PLOTS --------- ####
 fig = make_subplots(rows=3, cols=1,
                     subplot_titles=("X", "Y", "Z"), 
                     vertical_spacing=0.05
@@ -30,7 +49,15 @@ fig = make_subplots(rows=3, cols=1,
 
 # acceleration in x
 fig.add_trace(
-    go.Scatter(x=t_b, y=ax_b, name="ax_b", line=dict(color="#aa81f0")),
+    go.Scatter(x=t_b1, y=ax_b1, name="ax_b1", line=dict(color="#aa81f0")),
+    row=1, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_b2, y=ax_b2, name="ax_b2", line=dict(color="#41adf0")),
+    row=1, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_b3, y=ax_b3, name="ax_b3", line=dict(color="#40b892")),
     row=1, col=1
 )
 fig.add_trace(
@@ -40,7 +67,15 @@ fig.add_trace(
 
 # acceleration in y
 fig.add_trace(
-    go.Scatter(x=t_b, y=ay_b, name="ay_b", line=dict(color="#aa81f0")),
+    go.Scatter(x=t_b1, y=ay_b1, name="ay_b1", line=dict(color="#aa81f0")),
+    row=2, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_b2, y=ay_b2, name="ay_b2", line=dict(color="#41adf0")),
+    row=2, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_b3, y=ay_b3, name="ay_b3", line=dict(color="#40b892")),
     row=2, col=1
 )
 fig.add_trace(
@@ -50,7 +85,15 @@ fig.add_trace(
 
 # acceleration in z
 fig.add_trace(
-    go.Scatter(x=t_b, y=az_b, name="az_b", line=dict(color="#aa81f0")),
+    go.Scatter(x=t_b1, y=az_b1, name="az_b1", line=dict(color="#aa81f0")),
+    row=3, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_b2, y=az_b2, name="az_b2", line=dict(color="#41adf0")),
+    row=3, col=1
+)
+fig.add_trace(
+    go.Scatter(x=t_b3, y=az_b3, name="az_b3", line=dict(color="#40b892")),
     row=3, col=1
 )
 fig.add_trace(
@@ -62,3 +105,15 @@ fig.update_layout(title="Comparison of Acceleration Data between Fans",
                   height = 1200,
                   width = 1100)
 fig.show()
+
+#### ------ END PLOTS -------- ####
+
+"""
+
+#### ------ CALCULATE STATS ------- ####
+
+print(good.mean(axis=0))
+print(good)
+print(bad1.mean(axis=0))
+print(bad2.mean(axis=0))
+print(bad3.mean(axis=0))
