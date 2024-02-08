@@ -164,16 +164,22 @@ fig.show()
 
 #### ------ CALCULATE STATS ------- ####
 
-# 1. take averages of raw data : means are all pretty similar ---> std dev may be promising ? 
-# print("good fans")
-# for g in data_g:
-#     print(f"avg : ", np.mean(g, axis=0))
-#     print(f"std dev : ", np.std(g, axis=0))
+# 1. take averages of raw data : means are all pretty similar ---> std dev looks promising !! the bad ones are roughly 2x those of the good ones
+print("good fans")
+for g in data_g: 
+    # print(f"avg : ", np.mean(g, axis=0))
+    # print(f"std dev : ", np.std(g, axis=0))
 
-# print("bad fans")
-# for b in data_b:
-#     print(f"avg : ", np.mean(b, axis=0))
-#     print(f"std dev : ", np.std(b, axis=0))
+    # print("avg : ", np.mean(np.abs(g), axis=0))
+    print("std dev : ", np.std(np.abs(g), axis=0))
+
+print("bad fans")
+for b in data_b:
+    # print(f"avg : ", np.mean(b, axis=0))
+    # print(f"std dev : ", np.std(b, axis=0))
+
+    # print("avg : ", np.mean(np.abs(b), axis=0))
+    print("std dev : ", np.std(np.abs(b), axis=0))
 
 
 # 2. max [absolute] amplitude --> doens't seem relevant ... except the y accel for bad fans are pretty bad
@@ -189,13 +195,13 @@ fig.show()
 
  
 # 3. use find peaks ?? FINISH HERE !
-fig = go.Figure()
-t_g = [t_g7, t_g8, t_g9]
-t_b = [t_b1, t_b2, t_b3]
-for i in range(3):
-    peaks, _ = find_peaks(data_g[i])
-    fig.add_trace(x=t_g[i], y=data_g[i])
-    fig.add_trace(go.Scatter(x=t_g[i][peaks], y=data_g[i][peaks], mode='markers'))
+# fig = go.Figure()
+# t_g = [t_g7, t_g8, t_g9]
+# t_b = [t_b1, t_b2, t_b3]
+# for i in range(3):
+#     peaks, _ = find_peaks(data_g[i])
+#     fig.add_trace(x=t_g[i], y=data_g[i])
+#     fig.add_trace(go.Scatter(x=t_g[i][peaks], y=data_g[i][peaks], mode='markers'))
 
 # 4.  maybe determine at what theshold the amplitude hits a percentile ?
 
