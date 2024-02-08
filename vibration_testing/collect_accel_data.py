@@ -12,8 +12,8 @@ accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
 print("type in a name for the data to get saved to [excluding .csv]")
 filename = input() 
-filepath = f"/home/pi/fan_qc/vibration_testing/{filename}.csv"
-tf = 3  # endtime [sec]
+filepath = f"/home/pi/fan_qc/vibration_testing/accel_data/{filename}.csv"
+tf = 10 # endtime [sec]
 
 # initialize deque to contain all of the data --> O(1) time
 accel_data = deque()  # [time [sec], x_acc, y_acc, z_acc] 
