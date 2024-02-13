@@ -3,7 +3,7 @@ import numpy as np
 
 ## parse through data and if it meets specs, print out pass ! otherwise print out fail message
 
-filename = "good_7" # name of datafile without .csv [time, ax, ay, az]
+filename = "bad_1" # name of datafile without .csv [time, ax, ay, az]
 filepath = f"./accel_data/{filename}.csv"
 
 data = pd.read_csv(filepath)
