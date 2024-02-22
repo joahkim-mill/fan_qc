@@ -21,6 +21,9 @@ def accuracy_fn(y_true, y_pred):
     accuracy = (correct / len(y_pred)) * 100 
     return accuracy 
 
+def logits_to_pred_labels(y_logits):
+    return torch.round(torch.sigmoid(y_logits)) #prediction labels [0 or 1]
+
 """
 #region create tensors and save them to be loaded in 
 # create numpy array of all the data to be used for testing/training sets
@@ -70,11 +73,60 @@ untrained_predictions = model(X_test.to(device))
 loss_fn = nn.BCEWithLogitsLoss()
 
 # optimizer
-optimizer = torch.optim.SGD(params=model.parameters(), lr=0.1)
+optimizer = torch.optim.SGD(params=model.parameters(), lr=0.001)
 
-y_logits = model(X_test.to(device))  # predictions in raw output form
-y_pred_probs = torch.sigmoid(y_logits)  # predictions in probability form
-y_preds = torch.round(y_pred_probs)  # round to either 0 or 1 
+# y_logits = model(X_test.to(device))  # predictions in raw output form
+# y_pred_probs = torch.sigmoid(y_logits)  # in prediction probabilities form
+# y_preds = torch.round(y_pred_probs)  # round to either 0 or 1 
+
+# # Get rid of extra dimension
+# y_preds.squeeze()
+
+
+#region training/testing loop
+epochs = 100  
+
+# input data into target device
+X_train, y_train = X_train.to(device), y_train.to(device)
+X_test, y_test = X_test.to(device), y_test.to(device)
+
+for epoch in range(epochs):
+    # train 
+    model.train()
+
+    # forward pass 
+    y_logits = model(X_train).squeeze()
+    y_pred = logits_to_pred_labels(y_logits)
+
+    # calculate loss/accuracy
+    loss = loss_fn(y_logits, y_train)
+    acc = accuracy_fn(y_true=y_train, y_pred=y_pred) 
+
+    # optimizer zero grad
+    optimizer.zero_grad()
+
+    # loss backwards
+    loss.backward() 
+    
+    # optimizer step
+    optimizer.step() 
+
+    # testing 
+    model.eval() 
+    with torch.inference_mode():
+        # forward pass 
+        test_logits = model(X_test).squeeze() 
+        test_pred = logits_to_pred_labels(test_logits)
+
+        # loss / accuracy
+        test_loss = loss_fn(test_logits, y_test)
+        test_acc = accuracy_fn(y_true=y_test, y_pred=test_pred)
+    
+    #print every 10 epochs
+    if epoch % 10 == 0:
+        print(f"Epoch: {epoch} | Loss: {loss:.5f}, Accuracy: {acc:.2f}% | Test loss: {test_loss:.5f}, Test acc: {test_acc:.2f}%")
 
 
 
+
+#endregion training/testing loop
