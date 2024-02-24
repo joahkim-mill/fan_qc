@@ -9,9 +9,9 @@ class PiezoModel(nn.Module):
     def __init__(self):
         super().__init__()
         # create nn.Linear layers
-        self.layer_1 = nn.Linear(in_features=8191, out_features=8250)  # out_features is set to an arbitrary number rn, finetune later !
-        self.layer_2 = nn.Linear(in_features=8250, out_features=1) # takes in the features and outputs 1 (y)
-    
+        self.layer_1 = nn.Linear(in_features=8191, out_features=8500)  # out_features is set to an arbitrary number rn, finetune later !
+        self.layer_2 = nn.Linear(in_features=8500, out_features=1) # takes in the features and outputs 1 (y)
+        
     # forward pass computation
     def forward(self, x):
         return self.layer_2(self.layer_1(x))  # layer 1 --> layer 2
@@ -122,8 +122,8 @@ for epoch in range(epochs):
         test_loss = loss_fn(test_logits, y_test)
         test_acc = accuracy_fn(y_true=y_test, y_pred=test_pred)
     
-    #print every 10 epochs
-    if epoch % 10 == 0:
+    #print every other epoch
+    if epoch % 2 == 0:
         print(f"Epoch: {epoch} | Loss: {loss:.5f}, Accuracy: {acc:.2f}% | Test loss: {test_loss:.5f}, Test acc: {test_acc:.2f}%")
 
 
