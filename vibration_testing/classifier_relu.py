@@ -16,24 +16,24 @@ class Deep(nn.Module):
         self.act1 = nn.ReLU()
         self.layer2 = nn.Linear(8191, 8191)
         self.act2 = nn.ReLU()
-        self.layer3 = nn.Linear(8191, 8191)
-        self.act3 = nn.ReLU()
+        # self.layer3 = nn.Linear(8191, 8191)
+        # self.act3 = nn.ReLU()
         self.output = nn.Linear(8191, 1)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
         x = self.act1(self.layer1(x))
         x = self.act2(self.layer2(x))
-        x = self.act3(self.layer3(x))
+        # x = self.act3(self.layer3(x))
         x = self.sigmoid(self.output(x))
         return x
     
 def model_train(model, X_train, y_train, X_val, y_val):
     # loss function and optimizer
     loss_fn = nn.BCELoss()  # binary cross entropy
-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
+    optimizer = optim.Adam(model.parameters(), lr=0.005) # originally 0.0001
 
-    n_epochs = 250   # number of epochs to run
+    n_epochs = 100   # number of epochs to run --> originally 250
     batch_size = 10  # size of each batch
     batch_start = torch.arange(0, len(X_train), batch_size)
 
@@ -79,6 +79,7 @@ def model_train(model, X_train, y_train, X_val, y_val):
 
 X = torch.load('X_tensor.pt')
 y = torch.load('y_tensor.pt').reshape(-1, 1)
+print("loaded X and y")
 
 # train-test split: Hold out the test set for final model evaluation
 # define 5-fold cross validation test harness

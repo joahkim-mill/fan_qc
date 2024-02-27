@@ -10,11 +10,13 @@ class PiezoModel(nn.Module):
         super().__init__()
         # create nn.Linear layers
         self.layer_1 = nn.Linear(in_features=8191, out_features=8500)  # out_features is set to an arbitrary number rn, finetune later !
-        self.layer_2 = nn.Linear(in_features=8500, out_features=1) # takes in the features and outputs 1 (y)
+        self.layer_2 = nn.Linear(in_features=8500, out_features=8500)
+        self.layer_3 = nn.Linear(in_features=8500, out_features=1) # takes in the features and outputs 1 (y)
+        self.relu = nn.ReLU()
         
     # forward pass computation
     def forward(self, x):
-        return self.layer_2(self.layer_1(x))  # layer 1 --> layer 2
+        return self.layer_3(self.relu(self.layer_2(self.relu(self.layer_1(x)))))  # layer 1 --> layer 2
 
 def accuracy_fn(y_true, y_pred):
     correct = torch.eq(y_true, y_pred).sum().item() 
@@ -22,6 +24,10 @@ def accuracy_fn(y_true, y_pred):
     return accuracy 
 
 def logits_to_pred_labels(y_logits):
+    # y_logits = model(X_test.to(device))  # predictions in raw output form
+    # y_pred_probs = torch.sigmoid(y_logits)  # in prediction probabilities form
+    # y_preds = torch.round(y_pred_probs)  # round to either 0 or 1 
+    
     return torch.round(torch.sigmoid(y_logits)) #prediction labels [0 or 1]
 
 """
@@ -57,8 +63,11 @@ torch.save(y, 'y_tensor.pt')
 #endregion create tensors
 """
 
-X = torch.load('X_tensor.pt')
-y = torch.load('y_tensor.pt')
+# X = -1 * torch.load('X_tensor.pt')
+# y = torch.load('y_tensor.pt')
+X = -1 * torch.load('X_addNoise_tensor.pt')  #convert all negative numbers to positive for ReLU
+y = torch.load('y_addNoise_tensor.pt')
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2) #20% test, 80% train
 # print(len(X_train), len(X_test), len(y_train), len(y_test))
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -75,9 +84,6 @@ loss_fn = nn.BCEWithLogitsLoss()
 # optimizer
 optimizer = torch.optim.SGD(params=model.parameters(), lr=0.001)
 
-# y_logits = model(X_test.to(device))  # predictions in raw output form
-# y_pred_probs = torch.sigmoid(y_logits)  # in prediction probabilities form
-# y_preds = torch.round(y_pred_probs)  # round to either 0 or 1 
 
 # # Get rid of extra dimension
 # y_preds.squeeze()
@@ -90,9 +96,11 @@ epochs = 100
 X_train, y_train = X_train.to(device), y_train.to(device)
 X_test, y_test = X_test.to(device), y_test.to(device)
 
+
+
 for epoch in range(epochs):
     # train 
-    model.train()
+    # model.train()
 
     # forward pass 
     y_logits = model(X_train).squeeze()
@@ -122,8 +130,8 @@ for epoch in range(epochs):
         test_loss = loss_fn(test_logits, y_test)
         test_acc = accuracy_fn(y_true=y_test, y_pred=test_pred)
     
-    #print every other epoch
-    if epoch % 2 == 0:
+    #print every 10 epochs
+    if epoch % 10 == 0:
         print(f"Epoch: {epoch} | Loss: {loss:.5f}, Accuracy: {acc:.2f}% | Test loss: {test_loss:.5f}, Test acc: {test_acc:.2f}%")
 
 
