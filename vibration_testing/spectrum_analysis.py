@@ -166,8 +166,8 @@ X = torch.load('X_tensor.pt')
 X = X.numpy()
 freq = torch.load('frequency.pt')
 freq = freq.numpy()
-bad = X[:13, :]
-good = X[13:,:]
+bad = X[:14, :]
+good = X[14:,:]
 
 avg = np.mean(good, axis=0)
 std = np.std(good, axis=0)
@@ -177,7 +177,7 @@ fig = go.Figure()
 std_dev_mult = st.number_input("Input a Standard Deviation Multiplier")
 std_dev = np.concatenate([(avg+ std_dev_mult*std), (avg- std_dev_mult*std)[::-1]])
 
-out_b= np.zeros((13,))
+out_b= np.zeros((14,))
 out_g = np.zeros((67,))
 
 fig.add_trace(go.Scatter(x=np.concatenate([freq, freq[::-1]]), y=std_dev, name=f"Avg +/- {std_dev_mult} Std Dev", 
@@ -187,11 +187,16 @@ fig.add_trace(go.Scatter(x=np.concatenate([freq, freq[::-1]]), y=std_dev, name=f
 fig.add_trace(go.Scatter(x=freq, y=avg, name='average good fan',
                          line=dict(width=0.75, color='#bc37ed')))
 
+# find peaks that are above threshold instead of all of the data points ? 
 count = 0
 for b in bad:
+    # # using peaks instead of raw data points 
+    # peaks, _ = find_peaks(b)
+    # out_b[count] = (int)(np.sum((b > (avg + std_dev_mult*std))[peaks]))
+
+    # using raw data points
     out_b[count] = (int)(np.sum(b > (avg + std_dev_mult*std)))
-    # if count ==0:
-    #     st.table(b>(avg+std))
+    
     count += 1
 
     fig.add_trace(go.Scatter(x=freq, y=b, name=f"bad fan {count}",
@@ -200,8 +205,15 @@ for b in bad:
 
 count = 0
 for g in good: 
+    # # using peaks instead of raw data points
+    # peaks, _ = find_peaks(g)
+    # out_g[count] = (int)(np.sum((g > (avg + std_dev_mult*std))[peaks]))
+
+    # using raw data points
     out_g[count] = (int)(np.sum(g > (avg + std_dev_mult*std)))
+
     count += 1
+    
     fig.add_trace(go.Scatter(x=freq, y=g, name=f"good fan {count}",
                              line=dict(width=0.5)))
   
