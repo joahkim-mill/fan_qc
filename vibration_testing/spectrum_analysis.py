@@ -151,15 +151,6 @@ import torch
 
 # #endregion find peaks of signals
 
-# # plot good peaks to get a visual sense of which ones are common
-# fig_peaks = go.Figure()
-# for p in good_peaks_df:
-#     # print(p)
-#     fig_peaks.add_trace(go.Scatter(x=good_peaks_df[p], y=[0]*len(good_peaks_df[p]), name=p, 
-#                                    mode='markers', marker=dict(size=10)))
-# fig_peaks.update_layout(title="Peak Comparison of Good Fans", height=500, width=900)
-# st.plotly_chart(fig_peaks)
-
 
 #region compute average of good fans
 X = torch.load('X_tensor.pt')  
@@ -169,16 +160,6 @@ freq = freq.numpy()
 bad = X[:14, :] #rows 0-13
 good = X[14:,:] #rows 14-80
 
-#region inspect the good redo recordings
-redo = [7, 22, 27, 52]
-for r in redo: # starts from 0, so fan 1 is good[0] and so on
-    filepath = f"./piezo_audacity_data/good/good_{r}_redo.txt"
-    data = pd.read_csv(filepath, sep='\t')
-    db = np.asarray(data["Level (dB)"]).ravel() 
-    # replace original good data with the redo 
-    good[r - 1] = db
-
-#endregion inspect the good redo recordings
 
 # #region use dicts to swap between good and bad
 # good_dict = {}
@@ -233,6 +214,8 @@ for r in redo: # starts from 0, so fan 1 is good[0] and so on
 
 avg = np.mean(good, axis=0)
 std = np.std(good, axis=0)
+
+
 fig = go.Figure()
 
 # # std_dev_mult = 1.5
@@ -249,9 +232,21 @@ fig.add_trace(go.Scatter(x=np.concatenate([freq, freq[::-1]]), y=std_dev, name=f
 fig.add_trace(go.Scatter(x=freq, y=avg, name='average good fan',
                          line=dict(width=0.75, color='#bc37ed')))
 
-
 check_peak = st.checkbox('Use Peaks')
 
+#region inspect the good redo recordings
+# since this comes after finding the average and standard deviation of the original dataset, we can see how the re-recorded fans do 
+redo = [10, 22, 24, 27, 37, 52, 64, 65, 7, 47, 49, 51, 14, 48, 53, 61]
+
+for r in redo: # starts from 0, so fan 1 is good[0] and so on
+    filepath = f"./piezo_audacity_data/good/good_{r}_redo.txt"
+    data = pd.read_csv(filepath, sep='\t')
+    db = np.asarray(data["Level (dB)"]).ravel() 
+    # replace original good data with the redo 
+    good[r - 1] = db
+
+#endregion inspect the good redo recordings
+    
 # find peaks that are above threshold instead of all of the data points ? 
 count = 0
 for b in bad:
