@@ -245,6 +245,13 @@ for r in redo: # starts from 0, so fan 1 is good[0] and so on
     # replace original good data with the redo 
     good[r - 1] = db
 
+redo_bad = [8, 11, 12, 13]
+
+for rb in redo_bad:
+    filepath = f"./piezo_audacity_data/bad/bad_{rb}_redo.txt"
+    data = pd.read_csv(filepath, sep='\t')
+    db = np.asarray(data["Level (dB)"]).ravel()
+    bad[rb - 1] = db
 #endregion inspect the good redo recordings
     
 # find peaks that are above threshold instead of all of the data points ? 
