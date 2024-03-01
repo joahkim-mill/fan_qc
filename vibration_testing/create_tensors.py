@@ -6,7 +6,7 @@ import torch
 #region create tensors and save them to be loaded in 
 # create numpy array of all the data to be used for testing/training sets
 good = range(1,68)
-bad = range(1,15)
+bad = range(1,17)
 
 numFans = len(good) + len(bad)
 X = np.zeros((numFans, 8191))  

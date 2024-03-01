@@ -157,151 +157,110 @@ X = torch.load('X_tensor.pt')
 X = X.numpy()
 freq = torch.load('frequency.pt')
 freq = freq.numpy()
-bad = X[:14, :] #rows 0-13
-good = X[14:,:] #rows 14-80
-
-
-# #region use dicts to swap between good and bad
-# good_dict = {}
-# bad_dict = {}
-
-# for g in range(good.shape[0]):
-#     good_dict[f"g_{g+1}"] = good[g,:] # number starting from 1
-
-# for b in range(bad.shape[0]):
-#     bad_dict[f"b_{b+1}"] = bad[b, :] # number starting from 1
-# # could make one dict of of dict of good and bad --> allFans = {good: good_dict, bad: bad_dict} ??
-    
-# # edit the dicts to swap specific fans between good and bad
-# good_to_bad = [10, 22, 24, 27, 37, 52, 64, 65]
-# bad_to_good = [8, 11, 12, 13]
-
-# for g2b in good_to_bad:
-#     # copy over data 
-#     key = f"g_{g2b}"
-#     bad_dict[key] = good_dict[key] 
-
-#     # delete in original dict
-#     del(good_dict[key])
-
-# for b2g in bad_to_good:
-#     # copy over data
-#     key = f"b_{b2g}"
-#     good_dict[key] = bad_dict[key]
-
-#     # delete in original dict
-#     del(bad_dict[key])
-
-# # convert dicts into arrays for easier use 
-# # overwrite the initial good array
-# items = good_dict.items() # pairs of key, value
-# items = list(items)
-# num_items = len(items)
-# # print(len(items))
-# good = np.zeros((num_items, 8191))
-# for i in range(num_items):
-#     good[i] = items[i][1] # get values for each key
-# # print(good[0])
-    
-# items = bad_dict.items()
-# items = list(items)
-# num_items = len(items)
-# bad = np.zeros((num_items, 8191))
-# for i in range(num_items):
-#     bad[i] = items[i][1]
-
-# #endregion use dicts to swap between good and bad
+numBadFans = 16
+bad = X[:numBadFans, :] #rows 0-15
+good = X[numBadFans:,:] #rows 15-82
 
 avg = np.mean(good, axis=0)
 std = np.std(good, axis=0)
 
+# # create dataframe to save the stats
+# df = pd.DataFrame()
+# df["avg"] = avg 
+# df["std dev"] = std
 
-fig = go.Figure()
+# df.to_csv("model")
 
-# # std_dev_mult = 1.5
-std_dev_mult = st.number_input("Input a Standard Deviation Multiplier")
-std_dev = np.concatenate([(avg+ std_dev_mult*std), (avg- std_dev_mult*std)[::-1]])
+# #region streamlit plotting
+# fig = go.Figure()
 
-out_b= np.zeros((bad.shape[0],))
-out_g = np.zeros((good.shape[0],))
+# # # std_dev_mult = 1.5
+# std_dev_mult = st.number_input("Input a Standard Deviation Multiplier")
+# std_dev = np.concatenate([(avg+ std_dev_mult*std), (avg- std_dev_mult*std)[::-1]])
 
-fig.add_trace(go.Scatter(x=np.concatenate([freq, freq[::-1]]), y=std_dev, name=f"Avg +/- {std_dev_mult} Std Dev", 
-                         fill='toself',
-                         line=dict(width=0.5, color='#fad7f1'),
-                         ))
-fig.add_trace(go.Scatter(x=freq, y=avg, name='average good fan',
-                         line=dict(width=0.75, color='#bc37ed')))
+# out_b= np.zeros((bad.shape[0],))
+# out_g = np.zeros((good.shape[0],))
 
-check_peak = st.checkbox('Use Peaks')
+# fig.add_trace(go.Scatter(x=np.concatenate([freq, freq[::-1]]), y=std_dev, name=f"Avg +/- {std_dev_mult} Std Dev", 
+#                          fill='toself',
+#                          line=dict(width=0.5, color='#fad7f1'),
+#                          ))
+# fig.add_trace(go.Scatter(x=freq, y=avg, name='average good fan',
+#                          line=dict(width=0.75, color='#bc37ed')))
 
-#region inspect the good redo recordings
-# since this comes after finding the average and standard deviation of the original dataset, we can see how the re-recorded fans do 
-redo = [10, 22, 24, 27, 37, 52, 64, 65, 7, 47, 49, 51, 14, 48, 53, 61]
+# check_peak = st.checkbox('Use Peaks')
+# #endregion streamlit plotting
 
-for r in redo: # starts from 0, so fan 1 is good[0] and so on
-    filepath = f"./piezo_audacity_data/good/good_{r}_redo.txt"
-    data = pd.read_csv(filepath, sep='\t')
-    db = np.asarray(data["Level (dB)"]).ravel() 
-    # replace original good data with the redo 
-    good[r - 1] = db
+# #region inspect the good redo recordings
+# # since this comes after finding the average and standard deviation of the original dataset, we can see how the re-recorded fans do 
+# redo = [10, 22, 24, 27, 37, 52, 64, 65, 7, 47, 49, 51, 14, 48, 53, 61]
 
-redo_bad = [8, 11, 12, 13]
+# for r in redo: # starts from 0, so fan 1 is good[0] and so on
+#     filepath = f"./piezo_audacity_data/good/good_{r}_redo.txt"
+#     data = pd.read_csv(filepath, sep='\t')
+#     db = np.asarray(data["Level (dB)"]).ravel() 
+#     # replace original good data with the redo 
+#     good[r - 1] = db
 
-for rb in redo_bad:
-    filepath = f"./piezo_audacity_data/bad/bad_{rb}_redo.txt"
-    data = pd.read_csv(filepath, sep='\t')
-    db = np.asarray(data["Level (dB)"]).ravel()
-    bad[rb - 1] = db
-#endregion inspect the good redo recordings
+# redo_bad = [8, 11, 12, 13, 15]
+
+# for rb in redo_bad:
+#     filepath = f"./piezo_audacity_data/bad/bad_{rb}_redo.txt"
+#     data = pd.read_csv(filepath, sep='\t')
+#     db = np.asarray(data["Level (dB)"]).ravel()
+#     bad[rb - 1] = db
+# #endregion inspect the good redo recordings
     
-# find peaks that are above threshold instead of all of the data points ? 
-count = 0
-for b in bad:
-    if check_peak:
-        # using peaks instead of raw data points 
-        peaks, _ = find_peaks(b)
-        out_b[count] = (int)(np.sum((b > (avg + std_dev_mult*std))[peaks]))
-    else:
-        # using raw data points
-        out_b[count] = (int)(np.sum(b > (avg + std_dev_mult*std)))
+# #region find the crossings of avg +/- ()*std dev
+# count = 0
+# for b in bad:
+#     if check_peak:
+#         # using peaks instead of raw data points 
+#         peaks, _ = find_peaks(b)
+#         out_b[count] = (int)(np.sum((b > (avg + std_dev_mult*std))[peaks]))
+#     else:
+#         # using raw data points
+#         out_b[count] = (int)(np.sum(b > (avg + std_dev_mult*std)))
     
-    count += 1
+#     count += 1
 
-    fig.add_trace(go.Scatter(x=freq, y=b, name=f"bad fan {count}",
-                             line=dict(width=0.5)))
+#     fig.add_trace(go.Scatter(x=freq, y=b, name=f"bad fan {count}",
+#                              line=dict(width=0.5)))
     
-count = 0
-for g in good: 
-    if check_peak:
-        # using peaks instead of raw data points
-        peaks, _ = find_peaks(g)
-        out_g[count] = (int)(np.sum((g > (avg + std_dev_mult*std))[peaks]))
+# count = 0
+# for g in good: 
+#     if check_peak:
+#         # using peaks instead of raw data points
+#         peaks, _ = find_peaks(g)
+#         out_g[count] = (int)(np.sum((g > (avg + std_dev_mult*std))[peaks]))
 
-    else:
-        # using raw data points
-        out_g[count] = (int)(np.sum(g > (avg + std_dev_mult*std)))
+#     else:
+#         # using raw data points
+#         out_g[count] = (int)(np.sum(g > (avg + std_dev_mult*std)))
 
-    count += 1
+#     count += 1
     
-    fig.add_trace(go.Scatter(x=freq, y=g, name=f"good fan {count}",
-                             line=dict(width=0.5)))
+#     fig.add_trace(go.Scatter(x=freq, y=g, name=f"good fan {count}",
+#                              line=dict(width=0.5)))
 
-if check_peak:
-    fig.update_layout(title='fans with the avg / std dev using peaks', xaxis_title='Frequency(Hz)', yaxis_title='dB',
-                  width=1000, height=700)
-else:
-    fig.update_layout(title='fans with the avg / std dev', xaxis_title='Frequency(Hz)', yaxis_title='dB',
-                  width=1000, height=700)
+# if check_peak:
+#     fig.update_layout(title='fans with the avg / std dev using peaks', xaxis_title='Frequency(Hz)', yaxis_title='dB',
+#                   width=1000, height=700)
+# else:
+#     fig.update_layout(title='fans with the avg / std dev', xaxis_title='Frequency(Hz)', yaxis_title='dB',
+#                   width=1000, height=700)
     
-st.plotly_chart(fig)
+# st.plotly_chart(fig)
 
-col = st.columns(2)
-with col[0]:
-    st.header("bad fan outlier count:")
-    st.table(out_b)
+# col = st.columns(2)
+# with col[0]:
+#     st.header("bad fan outlier count:")
+#     st.table(out_b)
 
-with col[1]:
-    st.header("good fan outlier count:")
-    st.table(out_g)
+# with col[1]:
+#     st.header("good fan outlier count:")
+#     st.table(out_g)
 
-#endregion
+# #endregion
+    
+
