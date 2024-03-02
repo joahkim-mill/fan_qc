@@ -8,7 +8,7 @@ avg = model["avg"].to_numpy()  # (8191,)
 std_dev = model["std dev"].to_numpy()  # (8191,)
 
 actual_good = [1, 4, 6, 7, 8, 10]
-
+label = ["Bad", "Good"]
 # read in blind test data 
 for test in range(1, 12):
     filepath = f"./piezo_audacity_data/blind_test/{test}.txt"
@@ -31,7 +31,7 @@ for test in range(1, 12):
     buffer = 50
     # print out the result
 
-    print(f"Fan #{test} : actually good {test in actual_good}") 
+    print(f"Fan #{test} : {label[test in actual_good]}") 
     print("~~~"*10)
     print(f"\t Counted {count} crossings over the threshold.")
 
