@@ -1,38 +1,52 @@
 import pandas as pd 
 import numpy as np 
+from scipy.signal import find_peaks 
 
-## parse through data and if it meets specs, print out pass ! otherwise print out fail message
+# import avg and std_dev from git to evaluate avg + 2*std_dev
+model = pd.read_csv("https://raw.githubusercontent.com/joahkim-mill/fan_qc/main/vibration_testing/model")
+avg = model["avg"].to_numpy()  # (8191,)
+std_dev = model["std dev"].to_numpy()  # (8191,)
 
-filename = "bad_1" # name of datafile without .csv [time, ax, ay, az]
-filepath = f"./accel_data/{filename}.csv"
+actual_good = [1, 4, 6, 7, 8, 10]
 
-data = pd.read_csv(filepath)
+# read in blind test data 
+for test in range(1, 12):
+    filepath = f"./piezo_audacity_data/blind_test/{test}.txt"
 
-t = np.asarray(data["time"])
-ax = np.asarray(data["x_accel"])
-ay = np.asarray(data["y_accel"])
-az = np.asarray(data["z_accel"])
-a = np.hstack((ax.reshape((-1,1)), ay.reshape((-1,1)), az.reshape((-1,1))))  # [ax , ay, az] columnwise
+    # filepath = f"./piezo_audacity_data/bad/bad_16.txt"
+    data = pd.read_csv(filepath, sep='\t')
+    freq = data["Frequency (Hz)"]
+    dB = data["Level (dB)"].to_numpy()  # (8191,)
 
-std_threshold = [0.4, 0.3, 0.4]  ## slightly tight thresholds, so tweak with more data
-# calculate some stats using the absolute values, since the symmetry negates some of it
-avg = np.mean(np.abs(a), axis=0)
-std = np.std(np.abs(a), axis=0)
+    # calculate upper threshold -- not too concerned with lower threshold since it shouldn't matter if it's quieter
+    std_dev_mult = 2
+    cutoff = 100
+    threshold = avg + std_dev_mult*std_dev 
 
-print("Average of ||accelerations|| : \t a_x", '\t'*3, "a_y", '\t'*3, "a_z")
-print('\t'*4, '-'*66)
-print('\t'*4, avg[0], '\t', avg[1], '\t', avg[2])
-print("Standard Deviation of ||accelerations|| : a_x", '\t'*3, "a_y", '\t'*3, "a_z")
-print('\t'*5, '-'*66)
-print('\t'*5, std[0], '\t', std[1], '\t', std[2])
+    # find peaks 
+    peaks, _ = find_peaks(dB)
 
-# test = np.array([1,0,0])
-# print(std_threshold>=test)
-# print(np.all(std_threshold>=test))
+    # determine crossings
+    count = np.sum(dB[peaks] > threshold[peaks])
+    buffer = 50
+    # print out the result
 
-if (np.all(std_threshold >= std)):
-    print("Fan QC Test: PASS !")
-else:
-    print("Fan QC Test: FAIL :(")
+    print(f"Fan #{test} : actually good {test in actual_good}") 
+    print("~~~"*10)
+    print(f"\t Counted {count} crossings over the threshold.")
+
+    if count > cutoff: # fail [bad fan] 
+        print("\t FAIL : Bad Fan")
+    elif count <= cutoff:
+        print("\t PASS : Good Fan")
+
+    if (count >= cutoff) and (count - cutoff <= buffer):
+        print("\t Borderline : may want to re-check") 
+    
+    print("\n")
+
+# if count <= cutoff -> pass [good fan]
+# if count within cutoff+50, additionally print out that it's borderline / check again ??
+
 
 
