@@ -7,10 +7,10 @@ model = pd.read_csv("https://raw.githubusercontent.com/joahkim-mill/fan_qc/main/
 avg = model["avg"].to_numpy()  # (8191,)
 std_dev = model["std dev"].to_numpy()  # (8191,)
 
-actual_good = [1, 4, 6, 7, 8, 10]
+actual_good = [1, 4, 6, 7, 8, 10, 12, 14]
 label = ["Bad", "Good"]
 # read in blind test data 
-for test in range(1, 12):
+for test in range(1, 15):
     filepath = f"./piezo_audacity_data/blind_test/{test}.txt"
 
     # filepath = f"./piezo_audacity_data/bad/bad_16.txt"
