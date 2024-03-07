@@ -9,7 +9,7 @@ from scipy.signal import find_peaks
 #### --------- GOOD FAN DATA --------- ####
 # -- GOOD 7 -- #
 # read in csv to access data 
-good7 = pd.read_csv("./accel_data/good_7.csv")
+good7 = pd.read_csv("./accelerometer/accel_data/good_7.csv")
 
 # make them into columns
 t_g7 = np.asarray(good7["time"])
@@ -20,7 +20,7 @@ a_g7 = np.hstack((ax_g7.reshape((-1,1)), ay_g7.reshape((-1,1)), az_g7.reshape((-
 
 # -- GOOD 8 -- #
 # read in csv to access data 
-good8 = pd.read_csv("./accel_data/good_8.csv")
+good8 = pd.read_csv("./accelerometer/accel_data/good_8.csv")
 
 # make them into columns
 t_g8 = np.asarray(good8["time"])
@@ -31,7 +31,7 @@ a_g8 = np.hstack((ax_g8.reshape((-1,1)), ay_g8.reshape((-1,1)), az_g8.reshape((-
 
 # -- GOOD 9 -- #
 # read in csv to access data 
-good9 = pd.read_csv("./accel_data/good_9.csv")
+good9 = pd.read_csv("./accelerometer/accel_data/good_9.csv")
 
 # make them into columns
 t_g9 = np.asarray(good9["time"])
@@ -42,7 +42,7 @@ a_g9 = np.hstack((ax_g9.reshape((-1,1)), ay_g9.reshape((-1,1)), az_g9.reshape((-
 
 # -- GOOD 10 -- #
 # read in csv to access data 
-good10= pd.read_csv("./accel_data/good_10.csv")
+good10= pd.read_csv("./accelerometer/accel_data/good_10.csv")
 
 # make them into columns
 t_g10 = np.asarray(good10["time"])
@@ -56,7 +56,7 @@ a_g10 = np.hstack((ax_g10.reshape((-1,1)), ay_g10.reshape((-1,1)), az_g10.reshap
 #region -- bad fan data
 #### --------- BAD FAN DATA --------- ####
 # -- BAD 1 -- #
-bad1 = pd.read_csv("./accel_data/bad_1.csv")
+bad1 = pd.read_csv("./accelerometer/accel_data/bad_1.csv")
 
 # make them into columns
 t_b1 = np.asarray(bad1["time"])
@@ -66,7 +66,7 @@ az_b1 = np.asarray(bad1["z_accel"])
 a_b1 = np.hstack((ax_b1.reshape((-1,1)), ay_b1.reshape((-1,1)), az_b1.reshape((-1,1))))
 
 # -- BAD 2 -- #
-bad2 = pd.read_csv("./accel_data/bad_2.csv")
+bad2 = pd.read_csv("./accelerometer/accel_data/bad_2.csv")
 
 # make them into columns
 t_b2 = np.asarray(bad2["time"])
@@ -76,7 +76,7 @@ az_b2 = np.asarray(bad2["z_accel"])
 a_b2 = np.hstack((ax_b2.reshape((-1,1)), ay_b2.reshape((-1,1)), az_b2.reshape((-1,1))))
 
 # -- BAD 3 -- #
-bad3 = pd.read_csv("./accel_data/bad_3.csv")
+bad3 = pd.read_csv("./accelerometer/accel_data/bad_3.csv")
 
 # make them into columns
 t_b3 = np.asarray(bad3["time"])
