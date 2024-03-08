@@ -250,7 +250,7 @@ if __name__ == "__main__":
     accel_data = deque()
     print("Beginning data collection:")
     t0 = time.time()
-    duration = 5
+    duration = 10
 
     tf = t0 + duration
     while (time.time() < tf):
