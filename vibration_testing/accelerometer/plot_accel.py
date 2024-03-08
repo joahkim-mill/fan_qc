@@ -4,8 +4,8 @@ from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 from scipy.fft import fft, fftfreq
 
-dataname = '28_100pwm_5s'
-data = pd.read_csv(f'./new_accel_data/{dataname}.csv',)
+# dataname = '28_100pwm_5s'
+# data = pd.read_csv(f'./new_accel_data/45 pwm/{dataname}.csv',)
 # # data.columns = ['time', 'x_accel', 'y_accel', 'z_accel']
 # # print(data)
 
@@ -47,8 +47,15 @@ data = pd.read_csv(f'./new_accel_data/{dataname}.csv',)
 
 # fig.show()
 
+good = []
+dataname = '28_100pwm_5s'
+data = pd.read_csv(f'./new_accel_data/45 pwm/{dataname}.csv',)
 
-fig = go.Figure()
+# fig = go.Figure()
+fig = make_subplots(rows=3, cols=1,
+                    subplot_titles=("X", "Y", "Z"), 
+                    vertical_spacing=0.05
+                    )
 
 t = np.asarray(data["time"])
 ax = np.asarray(data["x_accel"])
