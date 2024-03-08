@@ -210,10 +210,10 @@ for g in good:
                              line=dict(width=0.5)))
 
 if check_peak:
-    fig.update_layout(title='fans with the avg / std dev using peaks', xaxis_title='Frequency(Hz)', yaxis_title='dB',
+    fig.update_layout(title='fans with the avg / std dev using peaks without springs', xaxis_title='Frequency(Hz)', yaxis_title='dB',
                   width=1000, height=700)
 else:
-    fig.update_layout(title='fans with the avg / std dev', xaxis_title='Frequency(Hz)', yaxis_title='dB',
+    fig.update_layout(title='fans with the avg / std dev without springs', xaxis_title='Frequency(Hz)', yaxis_title='dB',
                   width=1000, height=700)
     
 st.plotly_chart(fig)
