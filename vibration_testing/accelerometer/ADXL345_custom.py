@@ -237,54 +237,32 @@ class ADXL345:
 
         return val
 
-if __name__ == "__main__":
-    accelerometer = ADXL345(0x53)
+# if __name__ == "__main__":
+    def record_data():
+        accelerometer = ADXL345(0x53)
 
-    print("Type in a name for the data to get saved to [excluding .csv]")
-    filename = input() 
-    filepath = f"/home/pi/fan_qc/vibration_testing/accelerometer/new_accel_data/{filename}.csv"
+        print("Type in a name for the data to get saved to [excluding .csv]")
+        filename = input() 
+        filepath = f"/home/pi/fan_qc/vibration_testing/accelerometer/new_accel_data/{filename}.csv"
 
-    accel_data = deque()
-    print("Beginning data collection:")
-    t0 = time.time()
-    duration = 10
+        accel_data = deque()
+        print("Beginning data collection:")
+        t0 = time.time()
+        duration = 10
 
-    tf = t0 + duration
-    while (time.time() < tf):
-        axes = accelerometer.get_all_axes()
-        accel_data.append([(time.time() - t0), axes['x'], axes['y'], axes['z']])
+        tf = t0 + duration
+        while (time.time() < tf):
+            axes = accelerometer.get_all_axes()
+            accel_data.append([(time.time() - t0), axes['x'], axes['y'], axes['z']])
 
 
-    a=pd.DataFrame(accel_data)
-    a.columns=["time", "x_accel", "y_accel", "z_accel"]  # time[s], accelerations [m/s^2]
-    a.to_csv(filepath)
-    print(f"Success! File saved to: {filepath}")
+        a=pd.DataFrame(accel_data)
+        a.columns=["time", "x_accel", "y_accel", "z_accel"]  # time[s], accelerations [m/s^2]
+        a.to_csv(filepath)
+        print(f"Success! File saved to: {filepath}")
+        return a
         # print("time: ", time.time() - t0)
         # print("x: %.3f" % (axes['x']))
         # print("y: %.3f" % (axes['y']))
         # print("z: %.3f" % (axes['z']))
         
-
-"""
-## make sure to change the name of the file it gets saved to, or it will get overwritten
-i2c = board.I2C() 
-accelerometer = adafruit_adxl34x.ADXL345(i2c)
-
-print("type in a name for the data to get saved to [excluding .csv]")
-filename = input() 
-filepath = f"/home/pi/fan_qc/vibration_testing/accelerometer/new_accel_data/{filename}.csv"
-tf = 5 # endtime [sec]
-
-# initialize deque to contain all of the data --> O(1) time
-accel_data = deque()  # [time [sec], x_acc, y_acc, z_acc] 
-
-print("Beginning data collection:")
-t0 = time.time()  # starting time
-while (time.time() - t0 < tf):
-    accel_data.append([(time.time() - t0), accelerometer.acceleration[0], accelerometer.acceleration[1], accelerometer.acceleration[2]])
-   
-a=pd.DataFrame(accel_data)
-a.columns=["time", "x_accel", "y_accel", "z_accel"]  # time[s], accelerations [m/s^2]
-a.to_csv(filepath)
-print(f"Success! File saved to: {filepath}")
-"""
