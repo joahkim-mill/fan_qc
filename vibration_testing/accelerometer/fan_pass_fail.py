@@ -267,14 +267,16 @@ N = len(t)
 sample_rate = 1100 # Hz 
 T = 1/sample_rate 
 yf_z = fft(az)
-xf_z = fftfreq(N, T)[:N//2]
+xf_z = fftfreq(N, T)[:N//2] # (5603,)
 y_z = 2.0/N * abs(yf_z[0:N//2])
-
-crossed = np.sum(y_z[1:] > 0.4)
-print(f"{filename} : {crossed}")
+# print(xf_z.shape)
+# print(xf_z[2100])
+crossed_1 = np.sum(y_z[1:2100] > 0.4)
+crossed_2 = np.sum(y_z[2100:] > 0.2)
+print(f"{filename} : {crossed_1}, {crossed_2}")
 
 # fft signal magnitudes [excluding 0hz] should be under 0.4 to be considered a good fan
-if crossed < 1 :
+if (crossed_1 + crossed_2) < 1 :
     print("PASS : GOOD FAN")
 else:
     print("FAIL : BAD FAN") 
@@ -282,8 +284,6 @@ else:
 # fig = go.Figure()
 # fig.add_trace(go.Scatter(x=xf_z, y=y_z, line_shape='linear', name=f"{filename}"))
 # fig.show()
-
-
 
 
 
