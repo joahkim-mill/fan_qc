@@ -235,7 +235,7 @@ accelerometer = ADXL345(0x53)
 
 print("Type in a name for the data to get saved to [excluding .csv] -- Preferably FAN SERIAL # :")
 filename = input() 
-filepath = f"/home/pi/fan_qc/vibration_testing/accelerometer/new_accel_data/test_screen/{filename}.csv"
+filepath = f"/home/pi/fan_qc/vibration_testing/accelerometer/new_accel_data/45 pwm/{filename}.csv"
 
 print("TURN ON FAN TO 100PWM (24V) ! [press any key when ready]")
 ## TURN ON FAN 
