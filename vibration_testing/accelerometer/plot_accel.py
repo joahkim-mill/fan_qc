@@ -5,7 +5,8 @@ from plotly.subplots import make_subplots
 from scipy.fft import fft, fftfreq
 # import streamlit as st 
 
-dataname = 'G59'
+dataname = 'B16'
+# dataname = 'G14'
 data = pd.read_csv(f'./new_accel_data/test_screen/{dataname}.csv')
 # print(data)
 data.columns = ['index', 'time', 'x_accel', 'y_accel', 'z_accel']
@@ -24,6 +25,7 @@ xf_z = fftfreq(N, T)[:N//2]
 y_z = 2.0/N * abs(yf_z[0:N//2])
 fig = go.Figure()
 fig.add_trace(go.Scatter(x=xf_z, y=y_z, line_shape='linear', name=f"{dataname}_z"))
+fig.update_layout(title=f"{dataname} fft")
 fig.update_yaxes(range=[0, 1])
 fig.show()
 

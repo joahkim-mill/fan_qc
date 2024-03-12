@@ -5,7 +5,7 @@ import smbus
 from collections import deque
 from scipy.fft import fft, fftfreq
 import plotly.graph_objects as go
-
+# from src.utils.oscar import Oscar, OscarData
 class ADXL345:
     # Global Variables
     EARTH_GRAVITY_MS2 = 9.80665
@@ -238,6 +238,12 @@ filename = input()
 filepath = f"/home/pi/fan_qc/vibration_testing/accelerometer/new_accel_data/test_screen/{filename}.csv"
 
 print("TURN ON FAN TO 100PWM (24V) ! [press any key when ready]")
+## TURN ON FAN 
+# o = Oscar() 
+# o.setExhaustFanSpeed(100)
+
+# delay for ramp up 
+# time.sleep(5)
 
 throwaway = input()
 
@@ -256,6 +262,10 @@ a=pd.DataFrame(accel_data)
 a.columns=["time", "x_accel", "y_accel", "z_accel"]  # time[s], accelerations [m/s^2]
 a.to_csv(filepath)
 print(f"Success! File saved to: {filepath}")
+
+## TURN OFF THE FAN 
+# o.setExhaustFanSpeed(0)
+
 
 # analyze data with fft focusing on z_accel data for now
 t = np.asarray(a["time"]) 
